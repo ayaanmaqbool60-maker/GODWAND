@@ -1,0 +1,33 @@
+name: Build GOD WAND
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'GOD_WAND_Evil_Titan_Source.zip'
+      - '.github/workflows/build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Extract source
+        run: |
+          mkdir godwand-src
+          unzip GOD_WAND_Evil_Titan_Source.zip -d godwand-src
+
+      - name: Build
+        run: mvn -B -f godwand-src/pom.xml package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GOD-WAND-JAR
+          path: godwand-src/target/godwand-1.1.0.jar
